@@ -9,8 +9,52 @@ location[string] prefLoc;
 /*******************************************************
 *			USER DEFINED VARIABLES START
 /*******************************************************/
+
 // Quest priority order. Rearrange to your preference
 boolean[string] quests = $strings[balls, blood, bolts, chicken, chum, ice, milk, moonbeams, rain];
+/*******************************************************
+*		Toggle Variables
+*
+*	- grabDaily: When set to TRUE the script will go to
+*	both zones after grabbing a quest, in order to grab
+*	the once daily certificates. The script will probably
+*	break if you grab these on your own while leaving 
+*	this set to TRUE.
+*
+*	- dontFinish: When set to TRUE the script will stop
+*	execution after finishing the steps for grabDaily.
+*	If grabDaily is set to FALSE then the script should
+*	not spend any adventures anywhere and you'll feel 
+*	a bit silly.
+/*******************************************************/
+
+boolean grabDaily = TRUE;
+boolean dontFinish = FALSE;
+/*******************************************************
+*			Outfit, familiar, and autoattacks
+*	Enter the names of your outfits auto attacks,
+*	and familiars.
+*
+*	- Outfit: the name of the outfit to use for that quest.
+*	If left blank, only necessary equipment will be equipped.
+*	Necessary equipment will be equipped automatically: your
+*	outfit does not need to include them.
+*	
+*	- AutoAttack: for user created combat macros. 
+*	If left blank, it will default to mafia's standard behavior.
+*
+*	- Familiar: the proper/official name of the familiar to use.
+*	If left blank, your familiar will not be changed.
+*
+*	- Mood: the name of the mood you want to use.
+*	If left blank, your mood will not be changed.
+*
+*	- Location: the preferred location for you to go to
+*	to finish that specific Walford Quest. Do not leave
+*	blank. If you change it to a location outside the
+*	charter then you'll waste all your turns and feel
+*	foolish.
+/*******************************************************/
 
 outfits["balls"]		= "Glacier";
 outfits["blood"]		= "Glacier";
@@ -68,8 +112,6 @@ prefLoc["rain"]			= $location[VYKEA];
 
 string questlog = "questlog.php?which=1";
 string walford = "place.php?whichplace=airport_cold&action=glac_walrus";
-
-
 /*******************************************************
 *					changeSetup()
 *	Changes familiar, outfit, mood and autoattack for
@@ -88,7 +130,6 @@ void changeSetup(string quest)
 	if (item_amount($item[Walford's bucket]) > 0) // You need this
 		equip($slot[off-hand],$item[Walford's bucket]);
 }
-
 /*******************************************************
 *					grabQuest()
 *	Visits Walford, finding out which quest is 1st, 2nd
@@ -125,8 +166,7 @@ void grabQuest()
 				current = "y";
 		}
 	}
-	// Grab quest
-	visit_url(walford);
+	visit_url(walford); // Grab quest
 	run_choice(choice);
 }
 

@@ -29,9 +29,9 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	a bit silly.
 /*******************************************************/
 
-boolean grabDaily 		= FALSE;
-boolean finishQuest		= TRUE;
+boolean grabDaily 		= TRUE;
 boolean useFishy 		= TRUE;
+boolean finishQuest		= TRUE;
 /*******************************************************
 *			Outfit, familiar, and autoattacks
 *	Enter the names of your outfits auto attacks,
@@ -58,27 +58,27 @@ boolean useFishy 		= TRUE;
 *	foolish.
 /*******************************************************/
 
-outfits["balls"]			= "Glacier";
-outfits["blood"]			= "Glacier";
-outfits["bolts"]			= "Glacier";
-outfits["chicken"]			= "Glacier";
-outfits["chum"]				= "Glacier";
-outfits["ice"]				= "Glacier";
-outfits["milk"]				= "Glacier";
-outfits["moonbeams"]		= "Glacier";
-outfits["rain"]				= "Glacier";
+outfits["balls"]			= "Glaciest";
+outfits["blood"]			= "Glaciest";
+outfits["bolts"]			= "Glaciest";
+outfits["chicken"]			= "Glaciest";
+outfits["chum"]				= "Glaciest";
+outfits["ice"]				= "Glaciest";
+outfits["milk"]				= "Glaciest";
+outfits["moonbeams"]		= "Glaciest";
+outfits["rain"]				= "Glaciest";
 outfits["underwater"]		= "ice hole";
 
-fam["balls"]				= "Fancypants Scarecrow";
-fam["blood"]				= "Fancypants Scarecrow";
-fam["bolts"]				= "Fancypants Scarecrow";
-fam["chicken"]				= "Fancypants Scarecrow";
-fam["chum"]					= "Fancypants Scarecrow";
-fam["ice"]					= "Fancypants Scarecrow";
-fam["milk"]					= "Fancypants Scarecrow";
-fam["moonbeams"]			= "Fancypants Scarecrow";
-fam["rain"]					= "Fancypants Scarecrow";
-fam["underwater"]			= "Adorable Space Buddy";
+fam["balls"]				= "Stocking Mimic";
+fam["blood"]				= "Stocking Mimic";
+fam["bolts"]				= "Stocking Mimic";
+fam["chicken"]				= "Stocking Mimic";
+fam["chum"]					= "Stocking Mimic";
+fam["ice"]					= "Stocking Mimic";
+fam["milk"]					= "Stocking Mimic";
+fam["moonbeams"]			= "Stocking Mimic";
+fam["rain"]					= "Stocking Mimic";
+fam["underwater"]			= "Puck Man";
 
 autoattack["balls"]			= "";
 autoattack["blood"]			= "";
@@ -220,23 +220,27 @@ boolean questActive()
 *	Visits the Ice Hotel and VYKEA each to get the 
 *	once daily currency.
 /*******************************************************/
-void doDaily(string quest, location loc)
+boolean doDaily(string quest, location loc)
 {
 	changeSetup(quest); // Get geared up
-	int currency = item_amount($item[Wal-Mart gift certificate]);
-	while (item_amount($item[Wal-Mart gift certificate]) == currency)
+	string goalText = "This text should never actually appear. Cats. Dogs. Pigs.";
+	// Reset run_choice so it can work twice. This is dumb.
+	//print(visit_url("place.php?whichplace=airport_cold&action=glac_walrus"));
+	//run_choice(7);
+	if (loc == $location[VYKEA])
+		goalText = "You sneak into the employee lounge, rifle through some lockers and steal some valuables."
+	else if (loc == $location[The Ice Hotel])
+		goalText = "You break into a bunch of guest rooms (it's easy -- with locks made of ice, any source of flame is a key!) and dig through drawers looking for valuables."
+	while (TRUE)
 	{
 		adventure(1,loc);
-		if (questComplete())
-		{
-			visit_url(walford); // Turn in quest
-			run_choice(1);
-			grabQuest();
-		}
+		if (contains_text(run_choice(50),goalText))
+			return TRUE;
 	}
+	return FALSE;
 }
 
-iceHole()
+void iceHole()
 {
 	if (item_amount($item[fishy pipe]) > 0)
 		use(1,$item[fishy pipe]);
@@ -272,10 +276,10 @@ void main()
 		grabQuest();
 	if (grabDaily)
 	{
-		if (get_property("choiceAdventure1115") != "5")	// To grab currency
-			cli_execute("set choiceAdventure1115 = 5");
-		if (get_property("choiceAdventure1116") != "4")
-			cli_execute("set choiceAdventure1116 = 4");
+		if (get_property("choiceAdventure1115") != "4")	// To grab currency
+			cli_execute("set choiceAdventure1115 = 4");
+		if (get_property("choiceAdventure1116") != "5")
+			cli_execute("set choiceAdventure1116 = 5");
 		doDaily(questName(),$location[The Ice Hotel]);
 		doDaily(questName(),$location[VYKEA]);
 	}

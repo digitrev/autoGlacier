@@ -1,4 +1,5 @@
 script "autoGlacier.ash"
+notify Giestbar;
 
 // Leave these alone
 string[string] outfits;
@@ -11,7 +12,7 @@ location[string] prefLoc;
 /*******************************************************/
 
 // Quest priority order. Rearrange to your preference
-boolean[string] quests = $strings[balls, blood, bolts, chicken, chum, ice, milk, moonbeams, rain];
+boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, chum, milk, rain];
 /*******************************************************
 *		Toggle Variables
 *
@@ -141,7 +142,7 @@ void grabQuest()
 	string current; string first; string second; string third; // For quest processing
 	int choice; // Rank of the choice we pick
 	// Figure out what the quests are
-	matcher mission = create_matcher("\\b(balls|blood|bolts|chicken|chum|ice|milk|moonbeams|rain)(?=\")",visit_url(walford)); //"
+	matcher mission = create_matcher("\\b(balls|blood|bolts|chicken|chum|ice|milk|moonbeams|rain)(?=\")",visit_url(walford));
 	while (find(mission))
 	{
 		if (first == "")
@@ -187,11 +188,44 @@ string questName()
 	}
 	return "";
 }
-// 1116 = 5 for 3 walmart bucks
+
+boolean questComplete()
+{
+	if (contains_text(visit_url(questlog),"Take Walford's bucket back"))
+		return TRUE;
+	else
+		return FALSE;
+}
+/*******************************************************
+*					doDaily()
+*	Visits the Ice Hotel and VYKEA each to get the 
+*	once daily currency.
+/*******************************************************/
+void doDaily(string quest)
+{
+	changeSetup(quest); // Get geared up
+	int currency = item_amount($item[Wal-Mart gift certificate]);
+	if (get_property("choiceAdventure1115") != "5")	// To grab currency
+		cli_execute("set choiceAdventure1115 = 5");
+	if (get_property("choiceAdventure1116") != "5")
+		cli_execute("set choiceAdventure1116 = 5");
+	while (item_amount($item[Wal-Mart gift certificate]) == currency)
+	{
+		adventure(1,$location[The Ice Hotel]);
+		if (questComplete())
+			grabQuest()
+	}
+	currency = item_amount($item[Wal-Mart gift certificate]);
+	while (item_amount($item[Wal-Mart gift certificate]) == currency)
+	{
+		adventure(1,$location[VYKEA]);
+		if (questComplete())
+			grabQuest()
+	}
+}
 /*******************************************************
 *					doQuest()
-*	Sets the quest string variable with the name of the
-*	active quest.
+*	Gears up and finishes the bucket filling quest.
 /*******************************************************/
 void doQuest(string quest)
 {
@@ -200,7 +234,7 @@ void doQuest(string quest)
 		cli_execute("set choiceAdventure1115 = 3");
 	if (get_property("choiceAdventure1116") != "3")
 		cli_execute("set choiceAdventure1116 = 3");
-	while (!contains_text(visit_url(questlog),"Take Walford's bucket back"))
+	while (!questComplete())
 		adventure(1,prefLoc[quest]);
 	visit_url(walford); // Turn in quest
 	run_choice(1);
@@ -210,5 +244,8 @@ void main()
 {
   	if (!contains_text(questlog, "Filled to the Brim"))
 		grabQuest();
-	doQuest(questName());
+	string name = questName();
+	if (grabDaily)
+		doDaily(name);
+	doQuest(name);
 }

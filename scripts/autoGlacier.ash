@@ -206,6 +206,15 @@ boolean questComplete()
 	else
 		return FALSE;
 }
+
+boolean questActive()
+{
+	if (contains_text(visit_url(questlog),"Filled to the Brim"))
+		return TRUE;
+	else
+		return FALSE;
+}
+
 /*******************************************************
 *					doDaily()
 *	Visits the Ice Hotel and VYKEA each to get the 
@@ -226,6 +235,24 @@ void doDaily(string quest, location loc)
 		}
 	}
 }
+
+iceHole()
+{
+	if (item_amount($item[fishy pipe]) > 0)
+		use(1,$item[fishy pipe]);
+	changeSetup("underwater");
+	while (have_effect($effect[fishy]) > 0 && questActive())
+	{
+		adventure(1,$location[the ice hole]);
+		if (questComplete())
+		{
+			visit_url(walford); // Turn in quest
+			run_choice(1);
+			grabQuest();
+		}
+	}
+}
+
 /*******************************************************
 *					doQuest()
 *	Gears up and finishes the bucket filling quest.
@@ -233,7 +260,7 @@ void doDaily(string quest, location loc)
 void doQuest(string quest)
 {
 	changeSetup(quest); // Get geared up
-	while (!questComplete())
+	while (!questComplete() && questActive())
 		adventure(1,prefLoc[quest]);
 	visit_url(walford); // Turn in quest
 	run_choice(1);
@@ -253,21 +280,7 @@ void main()
 		doDaily(questName(),$location[VYKEA]);
 	}
 	if (useFishy)
-	{
-		if (item_amount($item[fishy pipe]) > 0)
-			use(1,$item[fishy pipe]);
-		changeSetup("underwater");
-		while (have_effect($effect[fishy]) > 0)
-		{
-			adventure(1,$location[the ice hole]);
-			if (questComplete())
-			{
-				visit_url(walford); // Turn in quest
-				run_choice(1);
-				grabQuest();
-			}
-		}
-	}
+		iceHole();
 	if (finishQuest)
 	{
 		if (get_property("choiceAdventure1115") != "3")	// For non-coms

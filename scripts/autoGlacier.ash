@@ -22,15 +22,16 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	break if you grab these on your own while leaving 
 *	this set to TRUE.
 *
-*	- dontFinish: When set to TRUE the script will stop
+*	- finishQuest: When set to FALSE the script will stop
 *	execution after finishing the steps for grabDaily.
 *	If grabDaily is set to FALSE then the script should
 *	not spend any adventures anywhere and you'll feel 
 *	a bit silly.
 /*******************************************************/
 
-boolean grabDaily = TRUE;
-boolean dontFinish = FALSE;
+boolean grabDaily 		= FALSE;
+boolean finishQuest		= TRUE;
+boolean useFishy 		= TRUE;
 /*******************************************************
 *			Outfit, familiar, and autoattacks
 *	Enter the names of your outfits auto attacks,
@@ -57,55 +58,59 @@ boolean dontFinish = FALSE;
 *	foolish.
 /*******************************************************/
 
-outfits["balls"]		= "Glacier";
-outfits["blood"]		= "Glacier";
-outfits["bolts"]		= "Glacier";
-outfits["chicken"]		= "Glacier";
-outfits["chum"]			= "Glacier";
-outfits["ice"]			= "Glacier";
-outfits["milk"]			= "Glacier";
-outfits["moonbeams"]	= "Glacier";
-outfits["rain"]			= "Glacier";
+outfits["balls"]			= "Glacier";
+outfits["blood"]			= "Glacier";
+outfits["bolts"]			= "Glacier";
+outfits["chicken"]			= "Glacier";
+outfits["chum"]				= "Glacier";
+outfits["ice"]				= "Glacier";
+outfits["milk"]				= "Glacier";
+outfits["moonbeams"]		= "Glacier";
+outfits["rain"]				= "Glacier";
+outfits["underwater"]		= "ice hole";
 
-fam["balls"]			= "Fancypants Scarecrow";
-fam["blood"]			= "Fancypants Scarecrow";
-fam["bolts"]			= "Fancypants Scarecrow";
-fam["chicken"]			= "Fancypants Scarecrow";
-fam["chum"]				= "Fancypants Scarecrow";
-fam["ice"]				= "Fancypants Scarecrow";
-fam["milk"]				= "Fancypants Scarecrow";
-fam["moonbeams"]		= "Fancypants Scarecrow";
-fam["rain"]				= "Fancypants Scarecrow";
+fam["balls"]				= "Fancypants Scarecrow";
+fam["blood"]				= "Fancypants Scarecrow";
+fam["bolts"]				= "Fancypants Scarecrow";
+fam["chicken"]				= "Fancypants Scarecrow";
+fam["chum"]					= "Fancypants Scarecrow";
+fam["ice"]					= "Fancypants Scarecrow";
+fam["milk"]					= "Fancypants Scarecrow";
+fam["moonbeams"]			= "Fancypants Scarecrow";
+fam["rain"]					= "Fancypants Scarecrow";
+fam["underwater"]			= "Adorable Space Buddy";
 
-autoattack["balls"]		= "";
-autoattack["blood"]		= "";
-autoattack["bolts"]		= "";
-autoattack["chicken"]	= "";
-autoattack["chum"]		= "";
-autoattack["ice"]		= "";
-autoattack["milk"]		= "";
-autoattack["moonbeams"]	= "";
-autoattack["rain"]		= "";
+autoattack["balls"]			= "";
+autoattack["blood"]			= "";
+autoattack["bolts"]			= "";
+autoattack["chicken"]		= "";
+autoattack["chum"]			= "";
+autoattack["ice"]			= "";
+autoattack["milk"]			= "";
+autoattack["moonbeams"]		= "";
+autoattack["rain"]			= "";
+autoattack["underwater"]	= "";
 
-mood["balls"]			= "";
-mood["blood"]			= "";
-mood["bolts"]			= "";
-mood["chicken"]			= "";
-mood["chum"]			= "";
-mood["ice"]				= "";
-mood["milk"]			= "";
-mood["moonbeams"]		= "";
-mood["rain"]			= "";
+mood["balls"]				= "";
+mood["blood"]				= "";
+mood["bolts"]				= "";
+mood["chicken"]				= "";
+mood["chum"]				= "";
+mood["ice"]					= "";
+mood["milk"]				= "";
+mood["moonbeams"]			= "";
+mood["rain"]				= "";
+mood["underwater"]			= "";
 
-prefLoc["balls"]		= $location[VYKEA];
-prefLoc["blood"]		= $location[The Ice Hotel];
-prefLoc["bolts"]		= $location[The Ice Hotel];
-prefLoc["chicken"]		= $location[The Ice Hotel];
-prefLoc["chum"]			= $location[VYKEA];
-prefLoc["ice"]			= $location[The Ice Hotel];
-prefLoc["milk"]			= $location[VYKEA];
-prefLoc["moonbeams"]	= $location[The Ice Hotel];
-prefLoc["rain"]			= $location[VYKEA];
+prefLoc["balls"]			= $location[VYKEA];
+prefLoc["blood"]			= $location[The Ice Hotel];
+prefLoc["bolts"]			= $location[The Ice Hotel];
+prefLoc["chicken"]			= $location[The Ice Hotel];
+prefLoc["chum"]				= $location[VYKEA];
+prefLoc["ice"]				= $location[The Ice Hotel];
+prefLoc["milk"]				= $location[VYKEA];
+prefLoc["moonbeams"]		= $location[The Ice Hotel];
+prefLoc["rain"]				= $location[VYKEA];
 /*******************************************************
 *			USER DEFINED VARIABLES END
 *		PLEASE DO NOT MODIFY VARIABLES BELOW
@@ -189,6 +194,11 @@ string questName()
 	return "";
 }
 
+/*******************************************************
+*					questComplete()
+*	Returns TRUE if Walford's quest is completed
+*	and ready to turn in.
+/*******************************************************/
 boolean questComplete()
 {
 	if (contains_text(visit_url(questlog),"Take Walford's bucket back"))
@@ -201,26 +211,19 @@ boolean questComplete()
 *	Visits the Ice Hotel and VYKEA each to get the 
 *	once daily currency.
 /*******************************************************/
-void doDaily(string quest)
+void doDaily(string quest, location loc)
 {
 	changeSetup(quest); // Get geared up
 	int currency = item_amount($item[Wal-Mart gift certificate]);
-	if (get_property("choiceAdventure1115") != "5")	// To grab currency
-		cli_execute("set choiceAdventure1115 = 5");
-	if (get_property("choiceAdventure1116") != "5")
-		cli_execute("set choiceAdventure1116 = 5");
 	while (item_amount($item[Wal-Mart gift certificate]) == currency)
 	{
-		adventure(1,$location[The Ice Hotel]);
+		adventure(1,loc);
 		if (questComplete())
-			grabQuest()
-	}
-	currency = item_amount($item[Wal-Mart gift certificate]);
-	while (item_amount($item[Wal-Mart gift certificate]) == currency)
-	{
-		adventure(1,$location[VYKEA]);
-		if (questComplete())
-			grabQuest()
+		{
+			visit_url(walford); // Turn in quest
+			run_choice(1);
+			grabQuest();
+		}
 	}
 }
 /*******************************************************
@@ -230,10 +233,6 @@ void doDaily(string quest)
 void doQuest(string quest)
 {
 	changeSetup(quest); // Get geared up
-	if (get_property("choiceAdventure1115") != "3")	// For non-coms
-		cli_execute("set choiceAdventure1115 = 3");
-	if (get_property("choiceAdventure1116") != "3")
-		cli_execute("set choiceAdventure1116 = 3");
 	while (!questComplete())
 		adventure(1,prefLoc[quest]);
 	visit_url(walford); // Turn in quest
@@ -244,8 +243,37 @@ void main()
 {
   	if (!contains_text(questlog, "Filled to the Brim"))
 		grabQuest();
-	string name = questName();
 	if (grabDaily)
-		doDaily(name);
-	doQuest(name);
+	{
+		if (get_property("choiceAdventure1115") != "5")	// To grab currency
+			cli_execute("set choiceAdventure1115 = 5");
+		if (get_property("choiceAdventure1116") != "4")
+			cli_execute("set choiceAdventure1116 = 4");
+		doDaily(questName(),$location[The Ice Hotel]);
+		doDaily(questName(),$location[VYKEA]);
+	}
+	if (useFishy)
+	{
+		if (item_amount($item[fishy pipe]) > 0)
+			use(1,$item[fishy pipe]);
+		changeSetup("underwater");
+		while (have_effect($effect[fishy]) > 0)
+		{
+			adventure(1,$location[the ice hole]);
+			if (questComplete())
+			{
+				visit_url(walford); // Turn in quest
+				run_choice(1);
+				grabQuest();
+			}
+		}
+	}
+	if (finishQuest)
+	{
+		if (get_property("choiceAdventure1115") != "3")	// For non-coms
+			cli_execute("set choiceAdventure1115 = 3");
+		if (get_property("choiceAdventure1116") != "3")
+			cli_execute("set choiceAdventure1116 = 3");
+		doQuest(questName());
+	}		
 }

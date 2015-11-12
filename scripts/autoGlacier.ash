@@ -229,7 +229,6 @@ void grabQuest()
 	visit_url(walford); // Grab quest
 	run_choice(choice);
 }
-
 /*******************************************************
 *					questName()
 *	Sets the quest string variable with the name of the
@@ -247,7 +246,6 @@ string questName()
 	}
 	return "";
 }
-
 /*******************************************************
 *					questComplete()
 *	Returns TRUE if Walford's quest is completed
@@ -260,7 +258,6 @@ boolean questComplete()
 	else
 		return FALSE;
 }
-
 /*******************************************************
 *					questActive()
 *	Returns TRUE if the player current has a bucket quest.
@@ -272,7 +269,6 @@ boolean questActive()
 	else
 		return FALSE;
 }
-
 /*******************************************************
 *					doDaily()
 *	Visits the Ice Hotel and VYKEA each to get the 
@@ -293,7 +289,6 @@ void doDaily(string quest, location loc)
 	while (!contains_text(run_choice(50),goalText))
 		adventure(1,loc);
 }
-
 /*******************************************************
 *					iceHole()
 *	Uses a fishy pipe and then visits the Ice Hole 
@@ -322,7 +317,6 @@ void iceHole()
 		}
 	}
 }
-
 /*******************************************************
 *					doQuest()
 *	Gears up and finishes the bucket filling quest.

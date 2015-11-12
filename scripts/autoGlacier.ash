@@ -228,9 +228,9 @@ boolean doDaily(string quest, location loc)
 	//print(visit_url("place.php?whichplace=airport_cold&action=glac_walrus"));
 	//run_choice(7);
 	if (loc == $location[VYKEA])
-		goalText = "You sneak into the employee lounge, rifle through some lockers and steal some valuables."
+		goalText = "You sneak into the employee lounge, rifle through some lockers and steal some valuables.";
 	else if (loc == $location[The Ice Hotel])
-		goalText = "You break into a bunch of guest rooms (it's easy -- with locks made of ice, any source of flame is a key!) and dig through drawers looking for valuables."
+		goalText = "You break into a bunch of guest rooms (it's easy -- with locks made of ice, any source of flame is a key!) and dig through drawers looking for valuables.";
 	while (TRUE)
 	{
 		adventure(1,loc);

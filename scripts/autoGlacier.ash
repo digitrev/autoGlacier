@@ -359,7 +359,7 @@ void main()
 	}
 	finally
 	{
-		if (restoreSetup())
+		if (restoreSetup)
 			restoreState();
 	}
 }

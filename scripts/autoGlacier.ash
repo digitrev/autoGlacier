@@ -1,18 +1,19 @@
 script "autoGlacier.ash"
 notify Giestbar;
 
-// Leave these alone
-string[string] outfits;
-string[string] fam;
-string[string] autoattack;
-string[string] mood;
-location[string] prefLoc;
+
+string[string] outfits;		// Leave this alone
+string[string] fam;			// Leave this alone
+string[string] autoattack;	// Leave this alone
+string[string] mood;		// Leave this alone
+location[string] prefLoc;	// Leave this alone
 /*******************************************************
 *			USER DEFINED VARIABLES START
 /*******************************************************/
 
 // Quest priority order. Rearrange to your preference
 boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, chum, milk, rain];
+
 /*******************************************************
 *		Toggle Variables
 *
@@ -28,7 +29,6 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	not spend any adventures anywhere and you'll feel 
 *	a bit silly.
 /*******************************************************/
-
 boolean grabDaily 		= TRUE;
 boolean useFishy 		= TRUE;
 boolean finishQuest		= TRUE;
@@ -115,7 +115,6 @@ prefLoc["rain"]				= $location[VYKEA];
 *			USER DEFINED VARIABLES END
 *		PLEASE DO NOT MODIFY VARIABLES BELOW
 /*******************************************************/
-
 string questlog = "questlog.php?which=1";
 string walford = "place.php?whichplace=airport_cold&action=glac_walrus";
 /*******************************************************
@@ -160,7 +159,7 @@ void grabQuest()
 	// Assign choice # for grabbing quest
 	foreach q in quests
 	{
-		if (current == "")
+		if (current == "")	// To allow termination after 3 matches
 		{
 			if (first == q)
 				choice = 2;
@@ -169,7 +168,7 @@ void grabQuest()
 			if (third == q)
 				choice = 4;
 			if (choice != 0)
-				current = "y";
+				current = "y"; // Just needs to be not blank
 		}
 	}
 	visit_url(walford); // Grab quest
@@ -207,6 +206,10 @@ boolean questComplete()
 		return FALSE;
 }
 
+/*******************************************************
+*					questActive()
+*	Returns TRUE if the player current has a bucket quest.
+/*******************************************************/
 boolean questActive()
 {
 	if (contains_text(visit_url(questlog),"Filled to the Brim"))
@@ -220,34 +223,42 @@ boolean questActive()
 *	Visits the Ice Hotel and VYKEA each to get the 
 *	once daily currency.
 /*******************************************************/
-boolean doDaily(string quest, location loc)
+void doDaily(string quest, location loc)
 {
+	if (get_property("choiceAdventure1115") != "4")	// To grab currency
+		cli_execute("set choiceAdventure1115 = 4");
+	if (get_property("choiceAdventure1116") != "5")
+		cli_execute("set choiceAdventure1116 = 5");
 	changeSetup(quest); // Get geared up
 	string goalText = "This text should never actually appear. Cats. Dogs. Pigs.";
-	// Reset run_choice so it can work twice. This is dumb.
-	//print(visit_url("place.php?whichplace=airport_cold&action=glac_walrus"));
-	//run_choice(7);
 	if (loc == $location[VYKEA])
 		goalText = "You sneak into the employee lounge, rifle through some lockers and steal some valuables.";
 	else if (loc == $location[The Ice Hotel])
 		goalText = "You break into a bunch of guest rooms (it's easy -- with locks made of ice, any source of flame is a key!) and dig through drawers looking for valuables.";
-	while (TRUE)
-	{
+	while (!contains_text(run_choice(50),goalText))
 		adventure(1,loc);
-		if (contains_text(run_choice(50),goalText))
-			return TRUE;
-	}
-	return FALSE;
 }
 
+/*******************************************************
+*					iceHole()
+*	Uses a fishy pipe and then visits the Ice Hole 
+*	so long as a quest is active and the player has
+*	the effect fishy.
+/*******************************************************/
 void iceHole()
 {
+	changeSetup("underwater");
 	if (item_amount($item[fishy pipe]) > 0)
 		use(1,$item[fishy pipe]);
-	changeSetup("underwater");
 	while (have_effect($effect[fishy]) > 0 && questActive())
 	{
 		adventure(1,$location[the ice hole]);
+		// Get the rare items if they're dolphined!
+		foreach it in $items[octolus-skin cloak, norwhal helmet, sardine can key]
+		{
+			if (it == get_property("dolphinItem").to_item() && item_amount($item[dolphin whistle]) > 0)
+				use(1, $item[dolphin whistle]);
+		}
 		if (questComplete())
 		{
 			visit_url(walford); // Turn in quest
@@ -263,6 +274,10 @@ void iceHole()
 /*******************************************************/
 void doQuest(string quest)
 {
+	if (get_property("choiceAdventure1115") != "3")	// For non-coms
+		cli_execute("set choiceAdventure1115 = 3");
+	if (get_property("choiceAdventure1116") != "3")
+		cli_execute("set choiceAdventure1116 = 3");
 	changeSetup(quest); // Get geared up
 	while (!questComplete() && questActive())
 		adventure(1,prefLoc[quest]);
@@ -272,25 +287,15 @@ void doQuest(string quest)
 
 void main()
 {
-  	if (!contains_text(questlog, "Filled to the Brim"))
+  	if (!questActive())
 		grabQuest();
 	if (grabDaily)
 	{
-		if (get_property("choiceAdventure1115") != "4")	// To grab currency
-			cli_execute("set choiceAdventure1115 = 4");
-		if (get_property("choiceAdventure1116") != "5")
-			cli_execute("set choiceAdventure1116 = 5");
 		doDaily(questName(),$location[The Ice Hotel]);
 		doDaily(questName(),$location[VYKEA]);
 	}
 	if (useFishy)
 		iceHole();
 	if (finishQuest)
-	{
-		if (get_property("choiceAdventure1115") != "3")	// For non-coms
-			cli_execute("set choiceAdventure1115 = 3");
-		if (get_property("choiceAdventure1116") != "3")
-			cli_execute("set choiceAdventure1116 = 3");
 		doQuest(questName());
-	}		
 }

@@ -58,27 +58,27 @@ boolean finishQuest		= TRUE;
 *	foolish.
 /*******************************************************/
 
-outfits["balls"]			= "Glaciest";
-outfits["blood"]			= "Glaciest";
-outfits["bolts"]			= "Glaciest";
-outfits["chicken"]			= "Glaciest";
-outfits["chum"]				= "Glaciest";
-outfits["ice"]				= "Glaciest";
-outfits["milk"]				= "Glaciest";
-outfits["moonbeams"]		= "Glaciest";
-outfits["rain"]				= "Glaciest";
-outfits["underwater"]		= "ice hole";
+outfits["balls"]			= "";
+outfits["blood"]			= "";
+outfits["bolts"]			= "";
+outfits["chicken"]			= "";
+outfits["chum"]				= "";
+outfits["ice"]				= "";
+outfits["milk"]				= "";
+outfits["moonbeams"]		= "";
+outfits["rain"]				= "";
+outfits["underwater"]		= "";
 
-fam["balls"]				= "Stocking Mimic";
-fam["blood"]				= "Stocking Mimic";
-fam["bolts"]				= "Stocking Mimic";
-fam["chicken"]				= "Stocking Mimic";
-fam["chum"]					= "Stocking Mimic";
-fam["ice"]					= "Stocking Mimic";
-fam["milk"]					= "Stocking Mimic";
-fam["moonbeams"]			= "Stocking Mimic";
-fam["rain"]					= "Stocking Mimic";
-fam["underwater"]			= "Puck Man";
+fam["balls"]				= "";
+fam["blood"]				= "";
+fam["bolts"]				= "";
+fam["chicken"]				= "";
+fam["chum"]					= "";
+fam["ice"]					= "";
+fam["milk"]					= "";
+fam["moonbeams"]			= "";
+fam["rain"]					= "";
+fam["underwater"]			= "";
 
 autoattack["balls"]			= "";
 autoattack["blood"]			= "";

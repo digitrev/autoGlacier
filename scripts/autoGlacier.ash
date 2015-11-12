@@ -138,6 +138,9 @@ prefLoc["rain"]				= $location[VYKEA];
 /*******************************************************/
 string questlog = "questlog.php?which=1";
 string walford = "place.php?whichplace=airport_cold&action=glac_walrus";
+// For restoring equipment
+item [slot] equipment;
+familiar fam;
 /*******************************************************
 *					saveSetup()
 *	Saves your familiar and equipment at the start of

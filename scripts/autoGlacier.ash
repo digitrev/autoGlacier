@@ -51,7 +51,7 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	to be defined in the earlier variables.
 /*******************************************************/
 boolean grabDaily 		= TRUE;
-boolean useFishy 		= TRUE;
+boolean useFishy 		= FALSE;
 boolean finishQuest		= TRUE;
 boolean restoreSetup	= FALSE;
 /*******************************************************

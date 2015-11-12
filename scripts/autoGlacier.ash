@@ -1,7 +1,15 @@
 script "autoGlacier.ash"
 notify Giestbar;
 
-
+/*******************************************************
+*	autoGlacier.ash
+*	r1
+*	
+*	Will retrieve and automatically adventure to finish
+*	the daily quest at The Glaciest. Various user-defined
+*	variables are made available to allow more optimal
+*	operation.
+/*******************************************************/
 string[string] outfits;		// Leave this alone
 string[string] fam;			// Leave this alone
 string[string] autoattack;	// Leave this alone
@@ -10,10 +18,11 @@ location[string] prefLoc;	// Leave this alone
 /*******************************************************
 *			USER DEFINED VARIABLES START
 /*******************************************************/
-
+// For restoring at the end of the script, if desired
+string restoreMood					= "";
+string restoreAutoAttack 			= "";
 // Quest priority order. Rearrange to your preference
 boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, chum, milk, rain];
-
 /*******************************************************
 *		Toggle Variables
 *
@@ -23,15 +32,28 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	break if you grab these on your own while leaving 
 *	this set to TRUE.
 *
+*	useFishy: When set to TRUE the script will attempt
+*	to use a fishy pipe and then adventure in the Ice
+*	Hole with the bucket equipped until fishy runs out.
+*	Dolphin whistles will be used to recover one of
+*	the three "rare" items from the zone if possible.
+*	An outfit with underwater breathing items is recommended.
+*
 *	- finishQuest: When set to FALSE the script will stop
 *	execution after finishing the steps for grabDaily.
 *	If grabDaily is set to FALSE then the script should
 *	not spend any adventures anywhere and you'll feel 
 *	a bit silly.
+*
+*	restoreSetup: When set to TRUE the script will
+*	restore your starting familiar, outfit, autoattack,
+*	and mood after execution. Mood and autoattack need
+*	to be defined in the earlier variables.
 /*******************************************************/
 boolean grabDaily 		= TRUE;
 boolean useFishy 		= TRUE;
 boolean finishQuest		= TRUE;
+boolean restoreSetup	= FALSE;
 /*******************************************************
 *			Outfit, familiar, and autoattacks
 *	Enter the names of your outfits auto attacks,
@@ -57,7 +79,6 @@ boolean finishQuest		= TRUE;
 *	charter then you'll waste all your turns and feel
 *	foolish.
 /*******************************************************/
-
 outfits["balls"]			= "";
 outfits["blood"]			= "";
 outfits["bolts"]			= "";
@@ -117,6 +138,37 @@ prefLoc["rain"]				= $location[VYKEA];
 /*******************************************************/
 string questlog = "questlog.php?which=1";
 string walford = "place.php?whichplace=airport_cold&action=glac_walrus";
+/*******************************************************
+*					saveSetup()
+*	Saves your familiar and equipment at the start of
+*	the script to revert back to them afterwards.
+/*******************************************************/
+void saveSetup()
+{
+	fam = my_familiar();
+	foreach s in $slots[]
+		equipment[s] = equipped_item(s);
+}
+/*******************************************************
+*					restoreState()
+*	Restores your familiar and equipment after execution
+*	of the script to the state they were in at the
+*	beginning. Also restores default mood and
+*	autoattack if those are set.
+/*******************************************************/
+void restoreState()
+{
+	use_familiar(fam);
+	foreach s in $slots[]
+	{
+		if (equipped_item(s) != equipment[s])
+			equip(s, equipment[s]);
+	}
+	if (restoreAutoAttack != "")
+		cli_execute("autoattack " + restoreAutoAttack);
+	if (restoreMood != "")
+		cli_execute("mood " + restoreMood);
+}
 /*******************************************************
 *					changeSetup()
 *	Changes familiar, outfit, mood and autoattack for
@@ -287,15 +339,24 @@ void doQuest(string quest)
 
 void main()
 {
-  	if (!questActive())
-		grabQuest();
-	if (grabDaily)
+	try
 	{
-		doDaily(questName(),$location[The Ice Hotel]);
-		doDaily(questName(),$location[VYKEA]);
+		saveSetup();
+		if (!questActive())
+			grabQuest();
+		if (grabDaily)
+		{
+			doDaily(questName(),$location[The Ice Hotel]);
+			doDaily(questName(),$location[VYKEA]);
+		}
+		if (useFishy)
+			iceHole();
+		if (finishQuest)
+			doQuest(questName());
 	}
-	if (useFishy)
-		iceHole();
-	if (finishQuest)
-		doQuest(questName());
+	finally
+	{
+		if (restoreSetup())
+			restoreState();
+	}
 }

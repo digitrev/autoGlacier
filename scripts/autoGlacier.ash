@@ -140,7 +140,7 @@ string questlog = "questlog.php?which=1";
 string walford = "place.php?whichplace=airport_cold&action=glac_walrus";
 // For restoring equipment
 item [slot] equipment;
-familiar fam;
+familiar f;
 /*******************************************************
 *					saveSetup()
 *	Saves your familiar and equipment at the start of
@@ -148,7 +148,7 @@ familiar fam;
 /*******************************************************/
 void saveSetup()
 {
-	fam = my_familiar();
+	f = my_familiar();
 	foreach s in $slots[]
 		equipment[s] = equipped_item(s);
 }
@@ -161,7 +161,7 @@ void saveSetup()
 /*******************************************************/
 void restoreState()
 {
-	use_familiar(fam);
+	use_familiar(f);
 	foreach s in $slots[]
 	{
 		if (equipped_item(s) != equipment[s])

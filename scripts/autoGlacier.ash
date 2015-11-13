@@ -281,7 +281,7 @@ void doDaily(string quest, location loc, string prop)
 		cli_execute("set choiceAdventure1115 = 4");
 	if (get_property("choiceAdventure1116") != "5")
 		cli_execute("set choiceAdventure1116 = 5");
-	while (get_property(prop).to_boolean())
+	while (!get_property(prop).to_boolean())
 		adventure(1,loc);
 }
 /*******************************************************

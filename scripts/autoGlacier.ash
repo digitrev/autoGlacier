@@ -281,12 +281,12 @@ void doDaily(string quest, location loc)
 	if (get_property("choiceAdventure1116") != "5")
 		cli_execute("set choiceAdventure1116 = 5");
 	changeSetup(quest); // Get geared up
-	string goalText = "This text should never actually appear. Cats. Dogs. Pigs.";
+	boolean test;
 	if (loc == $location[VYKEA])
-		goalText = "You sneak into the employee lounge, rifle through some lockers and steal some valuables.";
+		test = get_property("_VYKEALoungeRaided").to_boolean();
 	else if (loc == $location[The Ice Hotel])
-		goalText = "You break into a bunch of guest rooms (it's easy -- with locks made of ice, any source of flame is a key!) and dig through drawers looking for valuables.";
-	while (!contains_text(run_choice(50),goalText))
+		test = get_property("_iceHotelRoomsRaided").to_boolean();
+	while (!test)
 		adventure(1,loc);
 }
 /*******************************************************

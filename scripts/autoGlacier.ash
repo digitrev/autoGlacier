@@ -274,19 +274,14 @@ boolean questActive()
 *	Visits the Ice Hotel and VYKEA each to get the 
 *	once daily currency.
 /*******************************************************/
-void doDaily(string quest, location loc)
+void doDaily(string quest, location loc, string prop)
 {
 	if (get_property("choiceAdventure1115") != "4")	// To grab currency
 		cli_execute("set choiceAdventure1115 = 4");
 	if (get_property("choiceAdventure1116") != "5")
 		cli_execute("set choiceAdventure1116 = 5");
 	changeSetup(quest); // Get geared up
-	boolean test;
-	if (loc == $location[VYKEA])
-		test = get_property("_VYKEALoungeRaided").to_boolean();
-	else if (loc == $location[The Ice Hotel])
-		test = get_property("_iceHotelRoomsRaided").to_boolean();
-	while (!test)
+	while (get_property(prop).to_boolean())
 		adventure(1,loc);
 }
 /*******************************************************
@@ -343,8 +338,8 @@ void main()
 			grabQuest();
 		if (grabDaily)
 		{
-			doDaily(questName(),$location[The Ice Hotel]);
-			doDaily(questName(),$location[VYKEA]);
+			doDaily(questName(),$location[The Ice Hotel],"_iceHotelRoomsRaided");
+			doDaily(questName(),$location[VYKEA],"_VYKEALoungeRaided");
 		}
 		if (useFishy)
 			iceHole();

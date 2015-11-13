@@ -3,7 +3,7 @@ notify Giestbar;
 
 /*******************************************************
 *	autoGlacier.ash
-*	r1
+*	r3
 *	
 *	Will retrieve and automatically adventure to finish
 *	the daily quest at The Glaciest. Various user-defined
@@ -293,7 +293,7 @@ void doDaily(string quest, location loc, string prop)
 void iceHole()
 {
 	changeSetup("underwater");
-	if (item_amount($item[fishy pipe]) > 0)
+	if (item_amount($item[fishy pipe]) > 0 && !get_property("_fishyPipeUsed").to_boolean())
 		use(1,$item[fishy pipe]);
 	while (have_effect($effect[fishy]) > 0 && questActive())
 	{

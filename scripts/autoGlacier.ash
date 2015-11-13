@@ -276,11 +276,11 @@ boolean questActive()
 /*******************************************************/
 void doDaily(string quest, location loc, string prop)
 {
+	changeSetup(quest); // Get geared up
 	if (get_property("choiceAdventure1115") != "4")	// To grab currency
 		cli_execute("set choiceAdventure1115 = 4");
 	if (get_property("choiceAdventure1116") != "5")
 		cli_execute("set choiceAdventure1116 = 5");
-	changeSetup(quest); // Get geared up
 	while (get_property(prop).to_boolean())
 		adventure(1,loc);
 }
@@ -318,11 +318,11 @@ void iceHole()
 /*******************************************************/
 void doQuest(string quest)
 {
+	changeSetup(quest); // Get geared up
 	if (get_property("choiceAdventure1115") != "3")	// For non-coms
 		cli_execute("set choiceAdventure1115 = 3");
 	if (get_property("choiceAdventure1116") != "3")
 		cli_execute("set choiceAdventure1116 = 3");
-	changeSetup(quest); // Get geared up
 	while (!questComplete() && questActive())
 		adventure(1,prefLoc[quest]);
 	visit_url(walford); // Turn in quest

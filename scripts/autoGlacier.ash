@@ -1,9 +1,9 @@
 script "autoGlacier.ash"
 notify Giestbar;
+since r16444;
 
 /*******************************************************
 *	autoGlacier.ash
-*	r3
 *	
 *	Will retrieve and automatically adventure to finish
 *	the daily quest at The Glaciest. Various user-defined
@@ -45,7 +45,7 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	not spend any adventures anywhere and you'll feel 
 *	a bit silly.
 *
-*	restoreSetup: When set to TRUE the script will
+*	- restoreSetup: When set to TRUE the script will
 *	restore your starting familiar, outfit, autoattack,
 *	and mood after execution. Mood and autoattack need
 *	to be defined in the earlier variables.
@@ -54,6 +54,35 @@ boolean grabDaily 		= TRUE;
 boolean useFishy 		= FALSE;
 boolean finishQuest		= TRUE;
 boolean restoreSetup	= FALSE;
+/*******************************************************
+*			Minor Quest Tweaks
+*
+*	- removeHat: When set to TRUE the script will
+*	unequip your hat for the moonbeam quest to gain an
+*	extra 1% to the bucket per combat.
+*
+*	- equipBellhop: When set to TRUE the script will
+*	equip a Bellhop's Hat if available and if the
+*	preferred location of the chosen quest is the
+*	Ice Hotel.
+*
+*	- equipHexKey: When set to TRUE the script will
+*	equip the hex key before executing the bolts quest
+*	if the preferred location for bolts is set to VYKEA.
+*
+*	- usePirateTonic: When set to TRUE the script will
+*	use a single pirate gene tonic for the milk quest.
+*	The script will NOT buy a tonic if you have zero.
+*
+*	- useGoblinTonic: When set to TRUE the script will
+*	use a single goblin tonic for the chicken quest.
+*	The script will NOT buy a tonic if you have zero.
+/*******************************************************/
+boolean removeHat		= FALSE;
+boolean equipBellhop	= TRUE;
+boolean equipHexKey		= TRUE;
+boolean usePirateTonic	= FALSE;
+boolean useGoblinTonic	= FALSE;
 /*******************************************************
 *			Outfit, familiar, and autoattacks
 *	Enter the names of your outfits auto attacks,
@@ -189,6 +218,19 @@ void changeSetup(string quest)
 		cli_execute("mood " + mood[quest]);
 	if (item_amount($item[Walford's bucket]) > 0) // You need this
 		equip($slot[off-hand],$item[Walford's bucket]);
+	// Quest Toggle options
+	if (equipHexKey && prefLoc["bolts"] == $location[VYKEA] && quest == "bolts" && item_amount($item[VYKEA hex key]) > 0)
+		equip($slot[weapon],$item[VYKEA hex key]);
+	if (removeHat && quest == "moonbeams")
+		equip($slot[hat],$item[none]);
+	if (equipBellhop && prefLoc[quest] == $location[the ice hotel] && item_amount($item[bellhop's hat]) > 0)
+		equip($slot[hat],$item[bellhop's hat]);
+	if (usePirateTonic && quest == "milk" && item_amount($item[gene tonic: pirate]) > 0)
+		use(1,$item[gene tonic: pirate]);
+	if (useGoblinTonic && quest == "chicken" && item_amount($item[gene tonic: goblin]) > 0)
+		use(1,$item[gene tonic: goblin])
+	if (quest == "underwater" && !boolean_modifier("Underwater Familiar") && item_amount($item[das boot]) > 0)
+		equip($slot[familiar],$item[das boot]);
 }
 /*******************************************************
 *					grabQuest()

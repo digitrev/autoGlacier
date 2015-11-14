@@ -228,7 +228,7 @@ void changeSetup(string quest)
 	if (usePirateTonic && quest == "milk" && item_amount($item[gene tonic: pirate]) > 0)
 		use(1,$item[gene tonic: pirate]);
 	if (useGoblinTonic && quest == "chicken" && item_amount($item[gene tonic: goblin]) > 0)
-		use(1,$item[gene tonic: goblin])
+		use(1,$item[gene tonic: goblin]);
 	if (quest == "underwater" && !boolean_modifier("Underwater Familiar") && item_amount($item[das boot]) > 0)
 		equip($slot[familiar],$item[das boot]);
 }

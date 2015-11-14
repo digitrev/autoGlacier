@@ -319,6 +319,8 @@ boolean questActive()
 void doDaily(string quest, location loc, string prop)
 {
 	changeSetup(quest); // Get geared up
+	if (equipBellhop && prop == "_iceHotelRoomsRaided" && item_amount($item[bellhop's hat]) > 0)	
+		equip($slot[hat],$item[bellhop's hat]); // Check here in case prefloc isn't hotel
 	if (get_property("choiceAdventure1115") != "4")	// To grab currency
 		cli_execute("set choiceAdventure1115 = 4");
 	if (get_property("choiceAdventure1116") != "5")

@@ -380,6 +380,8 @@ void main()
 		saveSetup();
 		if (!questActive())
 			grabQuest();
+		if (have_effect($effect[fishy]) > 0 && useFishy)
+			iceHole();
 		if (grabDaily)
 		{
 			doDaily(questName(),$location[The Ice Hotel],"_iceHotelRoomsRaided");

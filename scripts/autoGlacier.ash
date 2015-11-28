@@ -5,129 +5,25 @@ since r16444;
 import <zlib.ash>
 
 /*******************************************************
-*	autoGlacier.ash
-*	
-*	Will retrieve and automatically adventure to finish
-*	the daily quest at The Glaciest. Various user-defined
-*	variables are made available to allow more optimal
-*	operation.
+*	zlib defaults
 /*******************************************************/
 setvar("ag_useAutoAttack", true);
 setvar("ag_outfitOrMaximizer", "outfits");
 
-string[string] outfits;		// Leave this alone
-string[string] fam;			// Leave this alone
-string[string] autoattack;	// Leave this alone
-string[string] mood;		// Leave this alone
-location[string] prefLoc;	// Leave this alone
-string[string] maximizer;	// Leave this alone
-/*******************************************************
-*			USER DEFINED VARIABLES START
-/*******************************************************/
-// For restoring at the end of the script, if desired
 setvar("ag_restoreMood", "");
 setvar("ag_restoreAutoAttack", "");
 
-string restoreMood      = "";
-string restoreAutoAttack= "";
-// Quest priority order. Rearrange to your preference
-boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, chum, milk, rain];
-/*******************************************************
-*		Toggle Variables
-*
-*	- grabDaily: When set to TRUE the script will go to
-*	both zones after grabbing a quest, in order to grab
-*	the once daily certificates. The script will probably
-*	break if you grab these on your own while leaving 
-*	this set to TRUE.
-*
-*	useFishy: When set to TRUE the script will attempt
-*	to use a fishy pipe and then adventure in the Ice
-*	Hole with the bucket equipped until fishy runs out.
-*	Dolphin whistles will be used to recover one of
-*	the three "rare" items from the zone if possible.
-*	An outfit with underwater breathing items is recommended.
-*
-*	- finishQuest: When set to FALSE the script will stop
-*	execution after finishing the steps for grabDaily.
-*	If grabDaily is set to FALSE then the script should
-*	not spend any adventures anywhere and you'll feel 
-*	a bit silly.
-*
-*	- restoreSetup: When set to TRUE the script will
-*	restore your starting familiar, outfit, autoattack,
-*	and mood after execution. Mood and autoattack need
-*	to be defined in the earlier variables.
-/*******************************************************/
 setvar("ag_grabDaily", true);
 setvar("ag_useFishy", false);
 setvar("ag_finishQuest", true);
 setvar("ag_restoreSetup", false);
 
-boolean grabDaily 		= vars["ag_grabDaily"];
-boolean useFishy 		= vars["ag_useFishy"];
-boolean finishQuest		= vars["ag_finishQuest"];
-boolean restoreSetup	= vars["ag_restoreSetup"];
-/*******************************************************
-*			Minor Quest Tweaks
-*
-*	- removeHat: When set to TRUE the script will
-*	unequip your hat for the moonbeam quest to gain an
-*	extra 1% to the bucket per combat.
-*
-*	- equipBellhop: When set to TRUE the script will
-*	equip a Bellhop's Hat if available and if the
-*	preferred location of the chosen quest is the
-*	Ice Hotel.
-*
-*	- equipHexKey: When set to TRUE the script will
-*	equip the hex key before executing the bolts quest
-*	if the preferred location for bolts is set to VYKEA.
-*
-*	- usePirateTonic: When set to TRUE the script will
-*	use a single pirate gene tonic for the milk quest.
-*	The script will NOT buy a tonic if you have zero.
-*
-*	- useGoblinTonic: When set to TRUE the script will
-*	use a single goblin tonic for the chicken quest.
-*	The script will NOT buy a tonic if you have zero.
-/*******************************************************/
 setvar("ag_removeHat", false);
 setvar("ag_equipBellhop",true);
 setvar("ag_equipHexKey", true);
 setvar("ag_usePirateTonic",false);
 setvar("ag_useGoblinTonic",false);
 
-boolean removeHat     = vars["ag_removeHat"];
-boolean equipBellhop  = vars["ag_equipBellhop"];
-boolean equipHexKey   = vars["ag_equipHexKey"];
-boolean usePirateTonic= vars["ag_usePirateTonic"];
-boolean useGoblinTonic= vars["ag_useGoblinTonic"];
-/*******************************************************
-*			Outfit, familiar, and autoattacks
-*	Enter the names of your outfits auto attacks,
-*	and familiars.
-*
-*	- Outfit: the name of the outfit to use for that quest.
-*	If left blank, only necessary equipment will be equipped.
-*	Necessary equipment will be equipped automatically: your
-*	outfit does not need to include them.
-*	
-*	- AutoAttack: for user created combat macros. 
-*	If left blank, it will default to mafia's standard behavior.
-*
-*	- Familiar: the proper/official name of the familiar to use.
-*	If left blank, your familiar will not be changed.
-*
-*	- Mood: the name of the mood you want to use.
-*	If left blank, your mood will not be changed.
-*
-*	- Location: the preferred location for you to go to
-*	to finish that specific Walford Quest. Do not leave
-*	blank. If you change it to a location outside the
-*	charter then you'll waste all your turns and feel
-*	foolish.
-/*******************************************************/
 setvar("ag_balls_outfit", "");
 setvar("ag_blood_outfit", "");
 setvar("ag_bolts_outfit", "");
@@ -182,7 +78,113 @@ setvar("ag_milk_mood", "");
 setvar("ag_moonbeams_mood", "");
 setvar("ag_rain_mood", "");
 setvar("ag_underwater_mood", "");
-
+/*******************************************************
+*	autoGlacier.ash
+*	
+*	Will retrieve and automatically adventure to finish
+*	the daily quest at The Glaciest. Various user-defined
+*	variables are made available to allow more optimal
+*	operation.
+/*******************************************************/
+string[string] outfits;		// Leave this alone
+string[string] fam;			// Leave this alone
+string[string] autoattack;	// Leave this alone
+string[string] mood;		// Leave this alone
+location[string] prefLoc;	// Leave this alone
+string[string] maximizer;	// Leave this alone
+/*******************************************************
+*			USER DEFINED VARIABLES START
+/*******************************************************/
+// For restoring at the end of the script, if desired
+string restoreMood      = vars["ag_restoreMood"];
+string restoreAutoAttack= vars["ag_restoreAutoAttack"];
+// Quest priority order. Rearrange to your preference
+boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, chum, milk, rain];
+/*******************************************************
+*		Toggle Variables
+*
+*	- grabDaily: When set to TRUE the script will go to
+*	both zones after grabbing a quest, in order to grab
+*	the once daily certificates. The script will probably
+*	break if you grab these on your own while leaving 
+*	this set to TRUE.
+*
+*	useFishy: When set to TRUE the script will attempt
+*	to use a fishy pipe and then adventure in the Ice
+*	Hole with the bucket equipped until fishy runs out.
+*	Dolphin whistles will be used to recover one of
+*	the three "rare" items from the zone if possible.
+*	An outfit with underwater breathing items is recommended.
+*
+*	- finishQuest: When set to FALSE the script will stop
+*	execution after finishing the steps for grabDaily.
+*	If grabDaily is set to FALSE then the script should
+*	not spend any adventures anywhere and you'll feel 
+*	a bit silly.
+*
+*	- restoreSetup: When set to TRUE the script will
+*	restore your starting familiar, outfit, autoattack,
+*	and mood after execution. Mood and autoattack need
+*	to be defined in the earlier variables.
+/*******************************************************/
+boolean grabDaily 		= vars["ag_grabDaily"];
+boolean useFishy 		= vars["ag_useFishy"];
+boolean finishQuest		= vars["ag_finishQuest"];
+boolean restoreSetup	= vars["ag_restoreSetup"];
+/*******************************************************
+*			Minor Quest Tweaks
+*
+*	- removeHat: When set to TRUE the script will
+*	unequip your hat for the moonbeam quest to gain an
+*	extra 1% to the bucket per combat.
+*
+*	- equipBellhop: When set to TRUE the script will
+*	equip a Bellhop's Hat if available and if the
+*	preferred location of the chosen quest is the
+*	Ice Hotel.
+*
+*	- equipHexKey: When set to TRUE the script will
+*	equip the hex key before executing the bolts quest
+*	if the preferred location for bolts is set to VYKEA.
+*
+*	- usePirateTonic: When set to TRUE the script will
+*	use a single pirate gene tonic for the milk quest.
+*	The script will NOT buy a tonic if you have zero.
+*
+*	- useGoblinTonic: When set to TRUE the script will
+*	use a single goblin tonic for the chicken quest.
+*	The script will NOT buy a tonic if you have zero.
+/*******************************************************/
+boolean removeHat     = vars["ag_removeHat"];
+boolean equipBellhop  = vars["ag_equipBellhop"];
+boolean equipHexKey   = vars["ag_equipHexKey"];
+boolean usePirateTonic= vars["ag_usePirateTonic"];
+boolean useGoblinTonic= vars["ag_useGoblinTonic"];
+/*******************************************************
+*			Outfit, familiar, and autoattacks
+*	Enter the names of your outfits auto attacks,
+*	and familiars.
+*
+*	- Outfit: the name of the outfit to use for that quest.
+*	If left blank, only necessary equipment will be equipped.
+*	Necessary equipment will be equipped automatically: your
+*	outfit does not need to include them.
+*	
+*	- AutoAttack: for user created combat macros. 
+*	If left blank, it will default to mafia's standard behavior.
+*
+*	- Familiar: the proper/official name of the familiar to use.
+*	If left blank, your familiar will not be changed.
+*
+*	- Mood: the name of the mood you want to use.
+*	If left blank, your mood will not be changed.
+*
+*	- Location: the preferred location for you to go to
+*	to finish that specific Walford Quest. Do not leave
+*	blank. If you change it to a location outside the
+*	charter then you'll waste all your turns and feel
+*	foolish.
+/*******************************************************/
 outfits["balls"]        = vars["ag_balls_outfit"];
 outfits["blood"]        = vars["ag_blood_outfit"];
 outfits["bolts"]        = vars["ag_bolts_outfit"];
@@ -194,16 +196,16 @@ outfits["moonbeams"]    = vars["ag_moonbeams_outfit"];
 outfits["rain"]         = vars["ag_rain_outfit"];
 outfits["underwater"]   = vars["ag_underwater_outfit"];
 
-maximizer["balls"]        = vars["ag_balls_maximizer"];
-maximizer["blood"]        = vars["ag_blood_maximizer"];
-maximizer["bolts"]        = vars["ag_bolts_maximizer"];
-maximizer["chicken"]      = vars["ag_chicken_maximizer"];
-maximizer["chum"]         = vars["ag_chum_maximizer"];
-maximizer["ice"]          = vars["ag_ice_maximizer"];
-maximizer["milk"]         = vars["ag_milk_maximizer"];
-maximizer["moonbeams"]    = vars["ag_moonbeams_maximizer"];
-maximizer["rain"]         = vars["ag_rain_maximizer"];
-maximizer["underwater"]   = vars["ag_underwater_maximizer"];
+maximizer["balls"]      = vars["ag_balls_maximizer"];
+maximizer["blood"]      = vars["ag_blood_maximizer"];
+maximizer["bolts"]      = vars["ag_bolts_maximizer"];
+maximizer["chicken"]    = vars["ag_chicken_maximizer"];
+maximizer["chum"]       = vars["ag_chum_maximizer"];
+maximizer["ice"]        = vars["ag_ice_maximizer"];
+maximizer["milk"]       = vars["ag_milk_maximizer"];
+maximizer["moonbeams"]  = vars["ag_moonbeams_maximizer"];
+maximizer["rain"]       = vars["ag_rain_maximizer"];
+maximizer["underwater"] = vars["ag_underwater_maximizer"];
 
 fam["balls"]            = vars["ag_balls_fam"];
 fam["blood"]            = vars["ag_blood_fam"];

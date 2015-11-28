@@ -127,10 +127,10 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	and mood after execution. Mood and autoattack need
 *	to be defined in the earlier variables.
 /*******************************************************/
-boolean grabDaily 		= vars["ag_grabDaily"];
-boolean useFishy 		= vars["ag_useFishy"];
-boolean finishQuest		= vars["ag_finishQuest"];
-boolean restoreSetup	= vars["ag_restoreSetup"];
+boolean grabDaily   = vars["ag_grabDaily"];
+boolean useFishy    = vars["ag_useFishy"];
+boolean finishQuest = vars["ag_finishQuest"];
+boolean restoreSetup= vars["ag_restoreSetup"];
 /*******************************************************
 *			Minor Quest Tweaks
 *
@@ -266,7 +266,7 @@ familiar f;
 void saveSetup()
 {
 	f = my_familiar();
-	foreach s in $slots[];
+	foreach s in $slots[]
 		equipment[s] = equipped_item(s);
 }
 /*******************************************************
@@ -279,7 +279,7 @@ void saveSetup()
 void restoreState()
 {
 	use_familiar(f);
-	foreach s in $slots[];
+	foreach s in $slots[]
 	{
 		if (equipped_item(s) != equipment[s])
 			equip(s, equipment[s]);
@@ -427,7 +427,7 @@ void iceHole()
 	{
 		adventure(1,$location[the ice hole]);
 		// Get the rare items if they're dolphined!
-		foreach it in $items[octolus-skin cloak, norwhal helmet, sardine can key];
+		foreach it in $items[octolus-skin cloak, norwhal helmet, sardine can key]
 		{
 			if (it == get_property("dolphinItem").to_item() && item_amount($item[dolphin whistle]) > 0)
 				use(1, $item[dolphin whistle]);
@@ -456,6 +456,7 @@ void doQuest(string quest)
 	visit_url(walford); // Turn in quest
 	run_choice(1);
 }
+
 
 void main()
 {

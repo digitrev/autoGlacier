@@ -19,10 +19,10 @@ setvar("ag_finishQuest", true);
 setvar("ag_restoreSetup", false);
 
 setvar("ag_removeHat", false);
-setvar("ag_equipBellhop",true);
+setvar("ag_equipBellhop", true);
 setvar("ag_equipHexKey", true);
-setvar("ag_usePirateTonic",false);
-setvar("ag_useGoblinTonic",false);
+setvar("ag_usePirateTonic", false);
+setvar("ag_useGoblinTonic", false);
 
 setvar("ag_balls_outfit", "");
 setvar("ag_blood_outfit", "");
@@ -123,7 +123,7 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	a bit silly.
 *
 *	- restoreSetup: When set to TRUE the script will
-*	restore your starting familiar, outfit, autoattack,
+*	restore your starting familiar, outfit, autoattack, 
 *	and mood after execution. Mood and autoattack need
 *	to be defined in the earlier variables.
 /*******************************************************/
@@ -162,7 +162,7 @@ boolean usePirateTonic= vars["ag_usePirateTonic"];
 boolean useGoblinTonic= vars["ag_useGoblinTonic"];
 /*******************************************************
 *			Outfit, familiar, and autoattacks
-*	Enter the names of your outfits auto attacks,
+*	Enter the names of your outfits auto attacks, 
 *	and familiars.
 *
 *	- Outfit: the name of the outfit to use for that quest.
@@ -307,20 +307,20 @@ void changeSetup(string quest)
 	if (mood[quest] != "")
 		cli_execute("mood " + mood[quest]);
 	if (item_amount($item[Walford's bucket]) > 0) // You need this
-		equip($slot[off-hand],$item[Walford's bucket]);
+		equip($slot[off-hand], $item[Walford's bucket]);
 	// Quest Toggle options
 	if (equipHexKey && prefLoc["bolts"] == $location[VYKEA] && quest == "bolts" && item_amount($item[VYKEA hex key]) > 0)
-		equip($slot[weapon],$item[VYKEA hex key]);
+		equip($slot[weapon], $item[VYKEA hex key]);
 	if (removeHat && quest == "moonbeams")
-		equip($slot[hat],$item[none]);
+		equip($slot[hat], $item[none]);
 	if (equipBellhop && prefLoc[quest] == $location[the ice hotel] && item_amount($item[bellhop's hat]) > 0)
-		equip($slot[hat],$item[bellhop's hat]);
+		equip($slot[hat], $item[bellhop's hat]);
 	if (usePirateTonic && quest == "milk" && item_amount($item[gene tonic: pirate]) > 0)
-		use(1,$item[gene tonic: pirate]);
+		use(1, $item[gene tonic: pirate]);
 	if (useGoblinTonic && quest == "chicken" && item_amount($item[gene tonic: goblin]) > 0)
-		use(1,$item[gene tonic: goblin]);
+		use(1, $item[gene tonic: goblin]);
 	if (quest == "underwater" && !boolean_modifier("Underwater Familiar") && item_amount($item[das boot]) > 0)
-		equip($slot[familiar],$item[das boot]);
+		equip($slot[familiar], $item[das boot]);
 }
 /*******************************************************
 *					grabQuest()
@@ -333,7 +333,7 @@ void grabQuest()
 	string current; string first; string second; string third; // For quest processing
 	int choice; // Rank of the choice we pick
 	// Figure out what the quests are
-	matcher mission = create_matcher("\\b(balls|blood|bolts|chicken|chum|ice|milk|moonbeams|rain)(?=\")",visit_url(walford));
+	matcher mission = create_matcher("\\b(balls|blood|bolts|chicken|chum|ice|milk|moonbeams|rain)(?=\")", visit_url(walford));
 	while (find(mission))
 	{
 		if (first == "")
@@ -369,11 +369,11 @@ void grabQuest()
 string questName()
 {
 	if (item_amount($item[Walford's bucket]) > 0)
-		equip($slot[off-hand],$item[Walford's bucket]);
+		equip($slot[off-hand], $item[Walford's bucket]);
 	string page = visit_url(questlog);
 	foreach q in quests
 	{
-		if (contains_text(page,"fill his bucket with " + q))
+		if (contains_text(page, "fill his bucket with " + q))
 			return q;
 	}
 	return "";
@@ -404,13 +404,13 @@ void doDaily(string quest, location loc, string prop)
 {
 	changeSetup(quest); // Get geared up
 	if (equipBellhop && prop == "_iceHotelRoomsRaided" && item_amount($item[bellhop's hat]) > 0)	
-		equip($slot[hat],$item[bellhop's hat]); // Check here in case prefloc isn't hotel
+		equip($slot[hat], $item[bellhop's hat]); // Check here in case prefloc isn't hotel
 	if (get_property("choiceAdventure1115") != "4")	// To grab currency
 		set_property("choiceAdventure1115", "4");
 	if (get_property("choiceAdventure1116") != "5")
-		set_property("choiceAdventure1116","5");
+		set_property("choiceAdventure1116", "5");
 	while (!get_property(prop).to_boolean())
-		adventure(1,loc);
+		adventure(1, loc);
 }
 /*******************************************************
 *					iceHole()
@@ -422,10 +422,10 @@ void iceHole()
 {
 	changeSetup("underwater");
 	if (item_amount($item[fishy pipe]) > 0 && !get_property("_fishyPipeUsed").to_boolean())
-		use(1,$item[fishy pipe]);
+		use(1, $item[fishy pipe]);
 	while (have_effect($effect[fishy]) > 0 && questActive())
 	{
-		adventure(1,$location[the ice hole]);
+		adventure(1, $location[the ice hole]);
 		// Get the rare items if they're dolphined!
 		foreach it in $items[octolus-skin cloak, norwhal helmet, sardine can key]
 		{
@@ -452,7 +452,7 @@ void doQuest(string quest)
 	if (get_property("choiceAdventure1116") != "3")
 		set_property("choiceAdventure1116", "3");
 	while (!questComplete() && questActive())
-		adventure(1,prefLoc[quest]);
+		adventure(1, prefLoc[quest]);
 	visit_url(walford); // Turn in quest
 	run_choice(1);
 }
@@ -469,8 +469,8 @@ void main()
 			iceHole();
 		if (grabDaily)
 		{
-			doDaily(questName(),$location[The Ice Hotel],"_iceHotelRoomsRaided");
-			doDaily(questName(),$location[VYKEA],"_VYKEALoungeRaided");
+			doDaily(questName(), $location[The Ice Hotel], "_iceHotelRoomsRaided");
+			doDaily(questName(), $location[VYKEA], "_VYKEALoungeRaided");
 		}
 		if (useFishy)
 			iceHole();

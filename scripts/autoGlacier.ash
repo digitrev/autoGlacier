@@ -127,10 +127,10 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	and mood after execution. Mood and autoattack need
 *	to be defined in the earlier variables.
 /*******************************************************/
-boolean grabDaily   = vars["ag_grabDaily"];
-boolean useFishy    = vars["ag_useFishy"];
-boolean finishQuest = vars["ag_finishQuest"];
-boolean restoreSetup= vars["ag_restoreSetup"];
+boolean grabDaily   = vars["ag_grabDaily"].to_boolean();
+boolean useFishy    = vars["ag_useFishy"].to_boolean();
+boolean finishQuest = vars["ag_finishQuest"].to_boolean();
+boolean restoreSetup= vars["ag_restoreSetup"].to_boolean();
 /*******************************************************
 *			Minor Quest Tweaks
 *
@@ -155,11 +155,11 @@ boolean restoreSetup= vars["ag_restoreSetup"];
 *	use a single goblin tonic for the chicken quest.
 *	The script will NOT buy a tonic if you have zero.
 /*******************************************************/
-boolean removeHat     = vars["ag_removeHat"];
-boolean equipBellhop  = vars["ag_equipBellhop"];
-boolean equipHexKey   = vars["ag_equipHexKey"];
-boolean usePirateTonic= vars["ag_usePirateTonic"];
-boolean useGoblinTonic= vars["ag_useGoblinTonic"];
+boolean removeHat     = vars["ag_removeHat"].to_boolean();
+boolean equipBellhop  = vars["ag_equipBellhop"].to_boolean();
+boolean equipHexKey   = vars["ag_equipHexKey"].to_boolean();
+boolean usePirateTonic= vars["ag_usePirateTonic"].to_boolean();
+boolean useGoblinTonic= vars["ag_useGoblinTonic"].to_boolean();
 /*******************************************************
 *			Outfit, familiar, and autoattacks
 *	Enter the names of your outfits auto attacks, 
@@ -299,7 +299,7 @@ void changeSetup(string quest)
 	if (vars["ag_outfitOrMaximizer"] == "outfits" && outfits[quest] != "")
 		outfit(outfits[quest]);
 	if (fam[quest] != "")
-		use_familiar(fam[quest]);
+		use_familiar(fam[quest].to_familiar());
 	if (vars["ag_outfitOrMaximizer"] == "maximizer" && maximizer[quest] != "")
 		maximize(maximizer[quest], false);
 	if (autoattack[quest] != "" && vars["ag_useAutoAttack"].to_boolean())

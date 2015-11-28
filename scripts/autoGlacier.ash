@@ -390,7 +390,7 @@ string questName()
 /*******************************************************/
 boolean questComplete()
 {
-	return get_property("questECoBucket") == "finished";
+	return get_property("questECoBucket") == "step2";
 }
 /*******************************************************
 *					questActive()

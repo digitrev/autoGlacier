@@ -301,11 +301,11 @@ void restoreState()
 /*******************************************************/
 void changeSetup(string quest)
 {
-	if (vars["ag_outfitOrMaximizer"] == "outfits" && outfits[quest] != "")
+	if (vars["ag_outfitOrMaximizer"].contains_text("outfit") && outfits[quest] != "")
 		outfit(outfits[quest]);
 	if (fam[quest] != "")
 		use_familiar(fam[quest].to_familiar());
-	if (vars["ag_outfitOrMaximizer"] == "maximizer" && maximizer[quest] != "")
+	if (vars["ag_outfitOrMaximizer"].contains_text("maximizer") && maximizer[quest] != "")
 		maximize(maximizer[quest], false);
 	if (autoattack[quest] != "" && vars["ag_useAutoAttack"].to_boolean())
 		cli_execute("autoattack " + autoattack[quest]);

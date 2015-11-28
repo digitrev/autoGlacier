@@ -390,7 +390,7 @@ string questName()
 /*******************************************************/
 boolean questComplete()
 {
-	return get_property("questECoBucket").to_int() >= 100;
+	return get_property("questECoBucket") == "finished";
 }
 /*******************************************************
 *					questActive()
@@ -414,7 +414,7 @@ void doDaily(string quest, location loc, string prop)
 		set_property("choiceAdventure1115", "4");
 	if (get_property("choiceAdventure1116") != "5")
 		set_property("choiceAdventure1116", "5");
-	while (!get_property(prop).to_boolean())
+	while (!get_property(prop).to_boolean() && my_adventures() > 0)
 		adventure(1, loc);
 }
 /*******************************************************
@@ -428,7 +428,7 @@ void iceHole()
 	changeSetup("underwater");
 	if (item_amount($item[fishy pipe]) > 0 && !get_property("_fishyPipeUsed").to_boolean())
 		use(1, $item[fishy pipe]);
-	while (have_effect($effect[fishy]) > 0 && questActive())
+	while (have_effect($effect[fishy]) > 0 && questActive() && my_adventures() > 0)
 	{
 		adventure(1, $location[the ice hole]);
 		// Get the rare items if they're dolphined!
@@ -456,10 +456,13 @@ void doQuest(string quest)
 		set_property("choiceAdventure1115", "3");
 	if (get_property("choiceAdventure1116") != "3")
 		set_property("choiceAdventure1116", "3");
-	while (!questComplete() && questActive())
+	//if we run out of turns, we gotta bail!
+	while (!questComplete() && questActive() && my_adventures() > 0)
 		adventure(1, prefLoc[quest]);
-	visit_url(walford); // Turn in quest
-	run_choice(1);
+	if (questComplete()){
+		visit_url(walford); // Turn in quest
+		run_choice(1);
+	}
 }
 
 

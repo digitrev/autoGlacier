@@ -12,6 +12,7 @@ setvar("ag_outfitOrMaximizer", "outfits");
 
 setvar("ag_restoreMood", "");
 setvar("ag_restoreAutoAttack", "");
+setvar("ag_quests", "blood, bolts, chicken, ice, moonbeams, balls, chum, milk, rain");
 
 setvar("ag_grabDaily", true);
 setvar("ag_useFishy", false);
@@ -99,7 +100,11 @@ string[string] maximizer;	// Leave this alone
 string restoreMood      = vars["ag_restoreMood"];
 string restoreAutoAttack= vars["ag_restoreAutoAttack"];
 // Quest priority order. Rearrange to your preference
-boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, chum, milk, rain];
+boolean[string] quests;
+foreach i, str in split_string(vars["ag_quests"], ", *") {
+	quests[str] = true;
+}
+
 /*******************************************************
 *		Toggle Variables
 *

@@ -2,6 +2,8 @@ script "autoGlacier.ash"
 notify Giestbar;
 since r16444;
 
+import <zlib.ash>
+
 /*******************************************************
 *	autoGlacier.ash
 *	
@@ -19,6 +21,9 @@ location[string] prefLoc;	// Leave this alone
 *			USER DEFINED VARIABLES START
 /*******************************************************/
 // For restoring at the end of the script, if desired
+setvar("ag_restoreMood", "");
+setvar("ag_restoreAutoAttack", "");
+
 string restoreMood					= "";
 string restoreAutoAttack 			= "";
 // Quest priority order. Rearrange to your preference
@@ -50,10 +55,15 @@ boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, 
 *	and mood after execution. Mood and autoattack need
 *	to be defined in the earlier variables.
 /*******************************************************/
-boolean grabDaily 		= TRUE;
-boolean useFishy 		= FALSE;
-boolean finishQuest		= TRUE;
-boolean restoreSetup	= FALSE;
+setvar("ag_grabDaily", true);
+setvar("ag_useFishy", false);
+setvar("ag_finishQuest", true);
+setvar("ag_restoreSetup", false);
+
+boolean grabDaily 		= vars["ag_grabDaily"];
+boolean useFishy 		= vars["ag_useFishy"];
+boolean finishQuest		= vars["ag_finishQuest"];
+boolean restoreSetup	= vars["ag_restoreSetup"];
 /*******************************************************
 *			Minor Quest Tweaks
 *
@@ -78,11 +88,17 @@ boolean restoreSetup	= FALSE;
 *	use a single goblin tonic for the chicken quest.
 *	The script will NOT buy a tonic if you have zero.
 /*******************************************************/
-boolean removeHat		= FALSE;
-boolean equipBellhop	= TRUE;
-boolean equipHexKey		= TRUE;
-boolean usePirateTonic	= FALSE;
-boolean useGoblinTonic	= FALSE;
+setvar("ag_removeHat", false);
+setvar("ag_equipBellhop",true);
+setvar("ag_equipHexKey", true);
+setvar("ag_usePirateTonic",false);
+setvar("ag_useGoblinTonic",false);
+
+boolean removeHat     = vars["ag_removeHat"];
+boolean equipBellhop  = vars["ag_equipBellhop"];
+boolean equipHexKey   = vars["ag_equipHexKey"];
+boolean usePirateTonic= vars["ag_usePirateTonic"];
+boolean useGoblinTonic= vars["ag_useGoblinTonic"];
 /*******************************************************
 *			Outfit, familiar, and autoattacks
 *	Enter the names of your outfits auto attacks,
@@ -108,59 +124,103 @@ boolean useGoblinTonic	= FALSE;
 *	charter then you'll waste all your turns and feel
 *	foolish.
 /*******************************************************/
-outfits["balls"]			= "";
-outfits["blood"]			= "";
-outfits["bolts"]			= "";
-outfits["chicken"]			= "";
-outfits["chum"]				= "";
-outfits["ice"]				= "";
-outfits["milk"]				= "";
-outfits["moonbeams"]		= "";
-outfits["rain"]				= "";
-outfits["underwater"]		= "";
+setvar("ag_balls_outfits", "");
+setvar("ag_blood_outfits", "");
+setvar("ag_bolts_outfits", "");
+setvar("ag_chicken_outfits", "");
+setvar("ag_chum_outfits", "");
+setvar("ag_ice_outfits", "");
+setvar("ag_milk_outfits", "");
+setvar("ag_moonbeams_outfits", "");
+setvar("ag_rain_outfits", "");
+setvar("ag_underwater_outfits", "");
 
-fam["balls"]				= "";
-fam["blood"]				= "";
-fam["bolts"]				= "";
-fam["chicken"]				= "";
-fam["chum"]					= "";
-fam["ice"]					= "";
-fam["milk"]					= "";
-fam["moonbeams"]			= "";
-fam["rain"]					= "";
-fam["underwater"]			= "";
+setvar("ag_balls_fam", "");
+setvar("ag_blood_fam", "");
+setvar("ag_bolts_fam", "");
+setvar("ag_chicken_fam", "");
+setvar("ag_chum_fam", "");
+setvar("ag_ice_fam", "");
+setvar("ag_milk_fam", "");
+setvar("ag_moonbeams_fam", "");
+setvar("ag_rain_fam", "");
+setvar("ag_underwater_fam", "");
 
-autoattack["balls"]			= "";
-autoattack["blood"]			= "";
-autoattack["bolts"]			= "";
-autoattack["chicken"]		= "";
-autoattack["chum"]			= "";
-autoattack["ice"]			= "";
-autoattack["milk"]			= "";
-autoattack["moonbeams"]		= "";
-autoattack["rain"]			= "";
-autoattack["underwater"]	= "";
+setvar("ag_balls_autoattack", "");
+setvar("ag_blood_autoattack", "");
+setvar("ag_bolts_autoattack", "");
+setvar("ag_chicken_autoattack", "");
+setvar("ag_chum_autoattack", "");
+setvar("ag_ice_autoattack", "");
+setvar("ag_milk_autoattack", "");
+setvar("ag_moonbeams_autoattack", "");
+setvar("ag_rain_autoattack", "");
+setvar("ag_underwater_autoattack", "");
 
-mood["balls"]				= "";
-mood["blood"]				= "";
-mood["bolts"]				= "";
-mood["chicken"]				= "";
-mood["chum"]				= "";
-mood["ice"]					= "";
-mood["milk"]				= "";
-mood["moonbeams"]			= "";
-mood["rain"]				= "";
-mood["underwater"]			= "";
+setvar("ag_balls_mood", "");
+setvar("ag_blood_mood", "");
+setvar("ag_bolts_mood", "");
+setvar("ag_chicken_mood", "");
+setvar("ag_chum_mood", "");
+setvar("ag_ice_mood", "");
+setvar("ag_milk_mood", "");
+setvar("ag_moonbeams_mood", "");
+setvar("ag_rain_mood", "");
+setvar("ag_underwater_mood", "");
 
-prefLoc["balls"]			= $location[VYKEA];
-prefLoc["blood"]			= $location[The Ice Hotel];
-prefLoc["bolts"]			= $location[The Ice Hotel];
-prefLoc["chicken"]			= $location[The Ice Hotel];
-prefLoc["chum"]				= $location[VYKEA];
-prefLoc["ice"]				= $location[The Ice Hotel];
-prefLoc["milk"]				= $location[VYKEA];
-prefLoc["moonbeams"]		= $location[The Ice Hotel];
-prefLoc["rain"]				= $location[VYKEA];
+outfits["balls"]        = vars["ag_balls_outfits"]
+outfits["blood"]        = vars["ag_blood_outfits"]
+outfits["bolts"]        = vars["ag_bolts_outfits"]
+outfits["chicken"]      = vars["ag_chicken_outfits"]
+outfits["chum"]         = vars["ag_chum_outfits"]
+outfits["ice"]          = vars["ag_ice_outfits"]
+outfits["milk"]         = vars["ag_milk_outfits"]
+outfits["moonbeams"]    = vars["ag_moonbeams_outfits"]
+outfits["rain"]         = vars["ag_rain_outfits"]
+outfits["underwater"]   = vars["ag_underwater_outfits"]
+
+fam["balls"]            = vars["ag_balls_fam"]
+fam["blood"]            = vars["ag_blood_fam"]
+fam["bolts"]            = vars["ag_bolts_fam"]
+fam["chicken"]          = vars["ag_chicken_fam"]
+fam["chum"]             = vars["ag_chum_fam"]
+fam["ice"]              = vars["ag_ice_fam"]
+fam["milk"]             = vars["ag_milk_fam"]
+fam["moonbeams"]        = vars["ag_moonbeams_fam"]
+fam["rain"]             = vars["ag_rain_fam"]
+fam["underwater"]       = vars["ag_underwater_fam"]
+
+autoattack["balls"]     = vars["ag_balls_autoattack"]
+autoattack["blood"]     = vars["ag_blood_autoattack"]
+autoattack["bolts"]     = vars["ag_bolts_autoattack"]
+autoattack["chicken"]   = vars["ag_chicken_autoattack"]
+autoattack["chum"]      = vars["ag_chum_autoattack"]
+autoattack["ice"]       = vars["ag_ice_autoattack"]
+autoattack["milk"]      = vars["ag_milk_autoattack"]
+autoattack["moonbeams"] = vars["ag_moonbeams_autoattack"]
+autoattack["rain"]      = vars["ag_rain_autoattack"]
+autoattack["underwater"]= vars["ag_underwater_autoattack"]
+
+mood["balls"]           = vars["ag_balls_mood"]
+mood["blood"]           = vars["ag_blood_mood"]
+mood["bolts"]           = vars["ag_bolts_mood"]
+mood["chicken"]         = vars["ag_chicken_mood"]
+mood["chum"]            = vars["ag_chum_mood"]
+mood["ice"]             = vars["ag_ice_mood"]
+mood["milk"]            = vars["ag_milk_mood"]
+mood["moonbeams"]       = vars["ag_moonbeams_mood"]
+mood["rain"]            = vars["ag_rain_mood"]
+mood["underwater"]      = vars["ag_underwater_mood"]
+
+prefLoc["balls"]        = $location[VYKEA];
+prefLoc["blood"]        = $location[The Ice Hotel];
+prefLoc["bolts"]        = $location[The Ice Hotel];
+prefLoc["chicken"]      = $location[The Ice Hotel];
+prefLoc["chum"]         = $location[VYKEA];
+prefLoc["ice"]          = $location[The Ice Hotel];
+prefLoc["milk"]         = $location[VYKEA];
+prefLoc["moonbeams"]    = $location[The Ice Hotel];
+prefLoc["rain"]         = $location[VYKEA];
 /*******************************************************
 *			USER DEFINED VARIABLES END
 *		PLEASE DO NOT MODIFY VARIABLES BELOW

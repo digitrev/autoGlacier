@@ -12,11 +12,15 @@ import <zlib.ash>
 *	variables are made available to allow more optimal
 *	operation.
 /*******************************************************/
+setvar("ag_useAutoAttack", true);
+setvar("ag_outfitOrMaximizer", "outfits");
+
 string[string] outfits;		// Leave this alone
 string[string] fam;			// Leave this alone
 string[string] autoattack;	// Leave this alone
 string[string] mood;		// Leave this alone
 location[string] prefLoc;	// Leave this alone
+string[string] maximizer;	// Leave this alone
 /*******************************************************
 *			USER DEFINED VARIABLES START
 /*******************************************************/
@@ -24,8 +28,8 @@ location[string] prefLoc;	// Leave this alone
 setvar("ag_restoreMood", "");
 setvar("ag_restoreAutoAttack", "");
 
-string restoreMood					= "";
-string restoreAutoAttack 			= "";
+string restoreMood      = "";
+string restoreAutoAttack= "";
 // Quest priority order. Rearrange to your preference
 boolean[string] quests = $strings[blood, bolts, chicken, ice, moonbeams, balls, chum, milk, rain];
 /*******************************************************
@@ -124,16 +128,27 @@ boolean useGoblinTonic= vars["ag_useGoblinTonic"];
 *	charter then you'll waste all your turns and feel
 *	foolish.
 /*******************************************************/
-setvar("ag_balls_outfits", "");
-setvar("ag_blood_outfits", "");
-setvar("ag_bolts_outfits", "");
-setvar("ag_chicken_outfits", "");
-setvar("ag_chum_outfits", "");
-setvar("ag_ice_outfits", "");
-setvar("ag_milk_outfits", "");
-setvar("ag_moonbeams_outfits", "");
-setvar("ag_rain_outfits", "");
-setvar("ag_underwater_outfits", "");
+setvar("ag_balls_outfit", "");
+setvar("ag_blood_outfit", "");
+setvar("ag_bolts_outfit", "");
+setvar("ag_chicken_outfit", "");
+setvar("ag_chum_outfit", "");
+setvar("ag_ice_outfit", "");
+setvar("ag_milk_outfit", "");
+setvar("ag_moonbeams_outfit", "");
+setvar("ag_rain_outfit", "");
+setvar("ag_underwater_outfit", "");
+
+setvar("ag_balls_maximizer", "");
+setvar("ag_blood_maximizer", "");
+setvar("ag_bolts_maximizer", "");
+setvar("ag_chicken_maximizer", "");
+setvar("ag_chum_maximizer", "");
+setvar("ag_ice_maximizer", "");
+setvar("ag_milk_maximizer", "");
+setvar("ag_moonbeams_maximizer", "");
+setvar("ag_rain_maximizer", "");
+setvar("ag_underwater_maximizer", "");
 
 setvar("ag_balls_fam", "");
 setvar("ag_blood_fam", "");
@@ -168,49 +183,60 @@ setvar("ag_moonbeams_mood", "");
 setvar("ag_rain_mood", "");
 setvar("ag_underwater_mood", "");
 
-outfits["balls"]        = vars["ag_balls_outfits"]
-outfits["blood"]        = vars["ag_blood_outfits"]
-outfits["bolts"]        = vars["ag_bolts_outfits"]
-outfits["chicken"]      = vars["ag_chicken_outfits"]
-outfits["chum"]         = vars["ag_chum_outfits"]
-outfits["ice"]          = vars["ag_ice_outfits"]
-outfits["milk"]         = vars["ag_milk_outfits"]
-outfits["moonbeams"]    = vars["ag_moonbeams_outfits"]
-outfits["rain"]         = vars["ag_rain_outfits"]
-outfits["underwater"]   = vars["ag_underwater_outfits"]
+outfits["balls"]        = vars["ag_balls_outfit"];
+outfits["blood"]        = vars["ag_blood_outfit"];
+outfits["bolts"]        = vars["ag_bolts_outfit"];
+outfits["chicken"]      = vars["ag_chicken_outfit"];
+outfits["chum"]         = vars["ag_chum_outfit"];
+outfits["ice"]          = vars["ag_ice_outfit"];
+outfits["milk"]         = vars["ag_milk_outfit"];
+outfits["moonbeams"]    = vars["ag_moonbeams_outfit"];
+outfits["rain"]         = vars["ag_rain_outfit"];
+outfits["underwater"]   = vars["ag_underwater_outfit"];
 
-fam["balls"]            = vars["ag_balls_fam"]
-fam["blood"]            = vars["ag_blood_fam"]
-fam["bolts"]            = vars["ag_bolts_fam"]
-fam["chicken"]          = vars["ag_chicken_fam"]
-fam["chum"]             = vars["ag_chum_fam"]
-fam["ice"]              = vars["ag_ice_fam"]
-fam["milk"]             = vars["ag_milk_fam"]
-fam["moonbeams"]        = vars["ag_moonbeams_fam"]
-fam["rain"]             = vars["ag_rain_fam"]
-fam["underwater"]       = vars["ag_underwater_fam"]
+maximizer["balls"]        = vars["ag_balls_maximizer"];
+maximizer["blood"]        = vars["ag_blood_maximizer"];
+maximizer["bolts"]        = vars["ag_bolts_maximizer"];
+maximizer["chicken"]      = vars["ag_chicken_maximizer"];
+maximizer["chum"]         = vars["ag_chum_maximizer"];
+maximizer["ice"]          = vars["ag_ice_maximizer"];
+maximizer["milk"]         = vars["ag_milk_maximizer"];
+maximizer["moonbeams"]    = vars["ag_moonbeams_maximizer"];
+maximizer["rain"]         = vars["ag_rain_maximizer"];
+maximizer["underwater"]   = vars["ag_underwater_maximizer"];
 
-autoattack["balls"]     = vars["ag_balls_autoattack"]
-autoattack["blood"]     = vars["ag_blood_autoattack"]
-autoattack["bolts"]     = vars["ag_bolts_autoattack"]
-autoattack["chicken"]   = vars["ag_chicken_autoattack"]
-autoattack["chum"]      = vars["ag_chum_autoattack"]
-autoattack["ice"]       = vars["ag_ice_autoattack"]
-autoattack["milk"]      = vars["ag_milk_autoattack"]
-autoattack["moonbeams"] = vars["ag_moonbeams_autoattack"]
-autoattack["rain"]      = vars["ag_rain_autoattack"]
-autoattack["underwater"]= vars["ag_underwater_autoattack"]
+fam["balls"]            = vars["ag_balls_fam"];
+fam["blood"]            = vars["ag_blood_fam"];
+fam["bolts"]            = vars["ag_bolts_fam"];
+fam["chicken"]          = vars["ag_chicken_fam"];
+fam["chum"]             = vars["ag_chum_fam"];
+fam["ice"]              = vars["ag_ice_fam"];
+fam["milk"]             = vars["ag_milk_fam"];
+fam["moonbeams"]        = vars["ag_moonbeams_fam"];
+fam["rain"]             = vars["ag_rain_fam"];
+fam["underwater"]       = vars["ag_underwater_fam"];
 
-mood["balls"]           = vars["ag_balls_mood"]
-mood["blood"]           = vars["ag_blood_mood"]
-mood["bolts"]           = vars["ag_bolts_mood"]
-mood["chicken"]         = vars["ag_chicken_mood"]
-mood["chum"]            = vars["ag_chum_mood"]
-mood["ice"]             = vars["ag_ice_mood"]
-mood["milk"]            = vars["ag_milk_mood"]
-mood["moonbeams"]       = vars["ag_moonbeams_mood"]
-mood["rain"]            = vars["ag_rain_mood"]
-mood["underwater"]      = vars["ag_underwater_mood"]
+autoattack["balls"]     = vars["ag_balls_autoattack"];
+autoattack["blood"]     = vars["ag_blood_autoattack"];
+autoattack["bolts"]     = vars["ag_bolts_autoattack"];
+autoattack["chicken"]   = vars["ag_chicken_autoattack"];
+autoattack["chum"]      = vars["ag_chum_autoattack"];
+autoattack["ice"]       = vars["ag_ice_autoattack"];
+autoattack["milk"]      = vars["ag_milk_autoattack"];
+autoattack["moonbeams"] = vars["ag_moonbeams_autoattack"];
+autoattack["rain"]      = vars["ag_rain_autoattack"];
+autoattack["underwater"]= vars["ag_underwater_autoattack"];
+
+mood["balls"]           = vars["ag_balls_mood"];
+mood["blood"]           = vars["ag_blood_mood"];
+mood["bolts"]           = vars["ag_bolts_mood"];
+mood["chicken"]         = vars["ag_chicken_mood"];
+mood["chum"]            = vars["ag_chum_mood"];
+mood["ice"]             = vars["ag_ice_mood"];
+mood["milk"]            = vars["ag_milk_mood"];
+mood["moonbeams"]       = vars["ag_moonbeams_mood"];
+mood["rain"]            = vars["ag_rain_mood"];
+mood["underwater"]      = vars["ag_underwater_mood"];
 
 prefLoc["balls"]        = $location[VYKEA];
 prefLoc["blood"]        = $location[The Ice Hotel];
@@ -238,7 +264,7 @@ familiar f;
 void saveSetup()
 {
 	f = my_familiar();
-	foreach s in $slots[]
+	foreach s in $slots[];
 		equipment[s] = equipped_item(s);
 }
 /*******************************************************
@@ -251,12 +277,12 @@ void saveSetup()
 void restoreState()
 {
 	use_familiar(f);
-	foreach s in $slots[]
+	foreach s in $slots[];
 	{
 		if (equipped_item(s) != equipment[s])
 			equip(s, equipment[s]);
 	}
-	if (restoreAutoAttack != "")
+	if (restoreAutoAttack != "" && vars["ag_useAutoAttack"].to_boolean())
 		cli_execute("autoattack " + restoreAutoAttack);
 	if (restoreMood != "")
 		cli_execute("mood " + restoreMood);
@@ -268,11 +294,13 @@ void restoreState()
 /*******************************************************/
 void changeSetup(string quest)
 {
-	if (outfits[quest] != "")
-		cli_execute("outfit " + outfits[quest]);
+	if (vars["ag_outfitOrMaximizer"] == "outfits" && outfits[quest] != "")
+		outfit(outfits[quest]);
 	if (fam[quest] != "")
-		cli_execute("familiar " + fam[quest]);
-	if (autoattack[quest] != "")
+		use_familiar(fam[quest]);
+	if (vars["ag_outfitOrMaximizer"] == "maximizer" && maximizer[quest] != "")
+		maximize(maximizer[quest], false);
+	if (autoattack[quest] != "" && vars["ag_useAutoAttack"].to_boolean())
 		cli_execute("autoattack " + autoattack[quest]);
 	if (mood[quest] != "")
 		cli_execute("mood " + mood[quest]);
@@ -355,10 +383,7 @@ string questName()
 /*******************************************************/
 boolean questComplete()
 {
-	if (contains_text(visit_url(questlog),"Take Walford's bucket back"))
-		return TRUE;
-	else
-		return FALSE;
+	return get_property("questECoBucket").to_int() >= 100;
 }
 /*******************************************************
 *					questActive()
@@ -366,10 +391,7 @@ boolean questComplete()
 /*******************************************************/
 boolean questActive()
 {
-	if (contains_text(visit_url(questlog),"Filled to the Brim"))
-		return TRUE;
-	else
-		return FALSE;
+	return get_property("questECoBucket") != "unstarted";
 }
 /*******************************************************
 *					doDaily()
@@ -382,9 +404,9 @@ void doDaily(string quest, location loc, string prop)
 	if (equipBellhop && prop == "_iceHotelRoomsRaided" && item_amount($item[bellhop's hat]) > 0)	
 		equip($slot[hat],$item[bellhop's hat]); // Check here in case prefloc isn't hotel
 	if (get_property("choiceAdventure1115") != "4")	// To grab currency
-		cli_execute("set choiceAdventure1115 = 4");
+		set_property("choiceAdventure1115", "4");
 	if (get_property("choiceAdventure1116") != "5")
-		cli_execute("set choiceAdventure1116 = 5");
+		set_property("choiceAdventure1116","5");
 	while (!get_property(prop).to_boolean())
 		adventure(1,loc);
 }
@@ -403,7 +425,7 @@ void iceHole()
 	{
 		adventure(1,$location[the ice hole]);
 		// Get the rare items if they're dolphined!
-		foreach it in $items[octolus-skin cloak, norwhal helmet, sardine can key]
+		foreach it in $items[octolus-skin cloak, norwhal helmet, sardine can key];
 		{
 			if (it == get_property("dolphinItem").to_item() && item_amount($item[dolphin whistle]) > 0)
 				use(1, $item[dolphin whistle]);
@@ -424,9 +446,9 @@ void doQuest(string quest)
 {
 	changeSetup(quest); // Get geared up
 	if (get_property("choiceAdventure1115") != "3")	// For non-coms
-		cli_execute("set choiceAdventure1115 = 3");
+		set_property("choiceAdventure1115", "3");
 	if (get_property("choiceAdventure1116") != "3")
-		cli_execute("set choiceAdventure1116 = 3");
+		set_property("choiceAdventure1116", "3");
 	while (!questComplete() && questActive())
 		adventure(1,prefLoc[quest]);
 	visit_url(walford); // Turn in quest

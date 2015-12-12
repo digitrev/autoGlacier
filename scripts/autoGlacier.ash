@@ -263,6 +263,8 @@ string walford = "place.php?whichplace=airport_cold&action=glac_walrus";
 // For restoring equipment
 item [slot] equipment;
 familiar f;
+string choiceAdventure1115;
+string choiceAdventure1116;
 /*******************************************************
 *					saveSetup()
 *	Saves your familiar and equipment at the start of
@@ -273,6 +275,8 @@ void saveSetup()
 	f = my_familiar();
 	foreach s in $slots[]
 		equipment[s] = equipped_item(s);
+	choiceAdventure1115 = get_property("choiceAdventure1115");
+	choiceAdventure1116 = get_property("choiceAdventure1116");
 }
 /*******************************************************
 *					restoreState()
@@ -292,7 +296,7 @@ void restoreState()
 	if (restoreAutoAttack != "" && vars["ag_useAutoAttack"].to_boolean())
 		cli_execute("autoattack " + restoreAutoAttack);
 	if (restoreMood != "")
-		cli_execute("mood " + restoreMood);
+		set_property("currentMood", restoreMood);
 }
 /*******************************************************
 *					changeSetup()
@@ -310,7 +314,7 @@ void changeSetup(string quest)
 	if (autoattack[quest] != "" && vars["ag_useAutoAttack"].to_boolean())
 		cli_execute("autoattack " + autoattack[quest]);
 	if (mood[quest] != "")
-		cli_execute("mood " + mood[quest]);
+		set_property("currentMood" , mood[quest]);
 	if (item_amount($item[Walford's bucket]) > 0) // You need this
 		equip($slot[off-hand], $item[Walford's bucket]);
 	// Quest Toggle options
@@ -410,10 +414,8 @@ void doDaily(string quest, location loc, string prop)
 	changeSetup(quest); // Get geared up
 	if (equipBellhop && prop == "_iceHotelRoomsRaided" && item_amount($item[bellhop's hat]) > 0)	
 		equip($slot[hat], $item[bellhop's hat]); // Check here in case prefloc isn't hotel
-	if (get_property("choiceAdventure1115") != "4")	// To grab currency
-		set_property("choiceAdventure1115", "4");
-	if (get_property("choiceAdventure1116") != "5")
-		set_property("choiceAdventure1116", "5");
+	set_property("choiceAdventure1115", "4");
+	set_property("choiceAdventure1116", "5");
 	while (!get_property(prop).to_boolean() && my_adventures() > 0)
 		adventure(1, loc);
 }
@@ -489,5 +491,7 @@ void main()
 	{
 		if (restoreSetup)
 			restoreState();
+		set_property("choiceAdventure1115", choiceAdventure1115);
+		set_property("choiceAdventure1116", choiceAdventure1116);
 	}
 }
